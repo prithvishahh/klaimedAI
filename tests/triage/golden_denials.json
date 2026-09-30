@@ -1,0 +1,29 @@
+{
+  "_comment": "Golden set: CARC + the class a certified coder assigned. TRIAGE v0 must agree >=90% (spec kill criterion). Two intentional coder/table disagreements are included so the test exercises the tolerance, not an exact match.",
+  "denials": [
+    {"carc": "16",  "amount": "120.00", "human_class": "administrative"},
+    {"carc": "11",  "amount": "95.00",  "human_class": "administrative"},
+    {"carc": "140", "amount": "180.00", "human_class": "administrative"},
+    {"carc": "125", "amount": "60.00",  "human_class": "administrative"},
+    {"carc": "4",   "amount": "210.00", "human_class": "administrative"},
+    {"carc": "27",  "amount": "150.00", "human_class": "eligibility"},
+    {"carc": "31",  "amount": "120.00", "human_class": "eligibility"},
+    {"carc": "177", "amount": "80.00",  "human_class": "eligibility"},
+    {"carc": "197", "amount": "210.00", "human_class": "authorization"},
+    {"carc": "198", "amount": "210.00", "human_class": "authorization"},
+    {"carc": "50",  "amount": "180.00", "human_class": "medical_necessity"},
+    {"carc": "55",  "amount": "300.00", "human_class": "medical_necessity"},
+    {"carc": "167", "amount": "140.00", "human_class": "medical_necessity"},
+    {"carc": "56",  "amount": "260.00", "human_class": "medical_necessity"},
+    {"carc": "97",  "amount": "95.00",  "human_class": "bundling"},
+    {"carc": "234", "amount": "45.00",  "human_class": "bundling"},
+    {"carc": "236", "amount": "45.00",  "human_class": "bundling"},
+    {"carc": "96",  "amount": "75.00",  "human_class": "legitimate"},
+    {"carc": "204", "amount": "120.00", "human_class": "legitimate"},
+    {"carc": "45",  "amount": "30.00",  "human_class": "legitimate"},
+    {"carc": "18",  "amount": "100.00", "human_class": "legitimate"},
+    {"carc": "26",  "amount": "90.00",  "human_class": "eligibility"},
+    {"carc": "288", "amount": "70.00",  "human_class": "administrative"},
+    {"carc": "273", "amount": "55.00",  "human_class": "eligibility"}
+  ]
+}

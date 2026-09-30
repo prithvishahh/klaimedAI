@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Klaimed · Denial Recovery Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand__dot"></span> Klaimed</div>
+    <div class="topbar__title">Denial Recovery Console</div>
+    <span class="chip chip--demo">Synthetic demo data</span>
+    <div class="topbar__practice">Practice: Beachhead Dermatology · contingency 25%</div>
+  </header>
+
+  <!-- KPI strip -->
+  <div class="kpis" id="kpis">
+    <div class="kpi"><span class="kpi__label">In queue</span><span class="kpi__val" id="kpiQueue">—</span></div>
+    <div class="kpi"><span class="kpi__label">Recoverable</span><span class="kpi__val" id="kpiRecoverable">—</span></div>
+    <div class="kpi kpi--accent"><span class="kpi__label">Recovered</span><span class="kpi__val" id="kpiRecovered">$0</span></div>
+    <div class="kpi"><span class="kpi__label">Klaimed fee (25%)</span><span class="kpi__val" id="kpiFee">$0</span></div>
+    <div class="kpi"><span class="kpi__label">Net to practice</span><span class="kpi__val" id="kpiNet">$0</span></div>
+    <div class="kpi"><span class="kpi__label">At risk ≤30d</span><span class="kpi__val" id="kpiRisk">—</span></div>
+  </div>
+
+  <main class="grid">
+    <!-- LEFT: intake + queue -->
+    <section class="col col--left">
+      <div class="panel" id="intake">
+        <h2 class="panel__h">1 · Bring in the denials</h2>
+        <p class="panel__sub">Drop the payer's <b>835 remittance</b> file, or load a sample.</p>
+        <label class="drop" id="drop">
+          <input type="file" id="file" accept=".835,.txt,.edi,text/plain" hidden />
+          <span class="drop__icon">↥</span>
+          <span class="drop__text" id="dropText">Drop an 835 file here, or click to choose</span>
+        </label>
+        <div class="intake__actions">
+          <button class="btn btn--primary" id="loadSample">Load sample 835</button>
+          <a class="btn btn--ghost" href="/api/sample-835" download="sample.835">View the raw file</a>
+        </div>
+      </div>
+
+      <div class="panel hidden" id="queuePanel">
+        <div class="queue__head">
+          <h2 class="panel__h">2 · Work queue</h2>
+          <div class="queue__tools">
+            <button class="btn btn--primary btn--sm" id="workAll">⚡ Work all fixable</button>
+            <a class="btn btn--ghost btn--sm" href="/api/export.csv" download>Export CSV</a>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input type="search" id="search" placeholder="Search patient, claim #, payer…" />
+          <select id="payerFilter"><option value="">All payers</option></select>
+          <select id="statusFilter">
+            <option value="">All statuses</option>
+            <option value="open">Open</option>
+            <option value="paid">Paid</option>
+            <option value="submitted">Submitted</option>
+            <option value="escalated">Escalated</option>
+          </select>
+        </div>
+        <div class="queue__scroll">
+          <table class="queue">
+            <thead>
+              <tr><th>Patient</th><th>Payer</th><th>CARC</th><th class="r">Denied</th><th>Action</th><th>Status</th><th class="r">Priority</th><th>Deadline</th></tr>
+            </thead>
+            <tbody id="queueBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: detail -->
+    <section class="col col--right">
+      <div class="panel panel--detail" id="detailPanel">
+        <div class="detail__empty" id="detailEmpty">
+          <p class="detail__empty-big">Select a denial</p>
+          <p class="detail__empty-sub">See exactly what Klaimed reads, fixes, and resubmits.</p>
+        </div>
+        <div id="detail" class="hidden"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Activity / audit feed -->
+  <section class="activity-wrap">
+    <div class="panel">
+      <h2 class="panel__h">Activity <span class="activity__sub">· append-only audit trail</span></h2>
+      <ul class="activity" id="activity"><li class="activity__empty">Load a remittance to begin.</li></ul>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

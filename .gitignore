@@ -1,0 +1,41 @@
+# --- Secrets & PHI: never commit either ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Any real patient data. Synthetic samples under data/samples/ ARE committed;
+# a real remittance drop-zone is walled off from git entirely.
+data/real/
+data/phi/
+*.phi
+# Real X12 files never enter the repo; only *.sample.835 (synthetic) is allowed.
+*.835
+!*.sample.835
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# --- OS / editor / local tooling ---
+.DS_Store
+.idea/
+.vscode/
+.claude/
+
+# rendered demo media (upload directly, do not commit)
+demo.mp4
+*.gif

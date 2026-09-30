@@ -1,0 +1,56 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    # A real Postgres+pgvector so the postgres-marked integration tests
+    # (encryption at rest, append-only audit trigger) run in CI.
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: rcm
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U postgres -d rcm"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      RCM_ENV: test
+      # A throwaway CI key (base64url of 32 bytes). Real keys live in KMS.
+      RCM_MASTER_KEY: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+      RCM_DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/rcm
+      RCM_MIGRATION_DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/rcm
+      RCM_EMBEDDING_DIM: "64"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Set up Python
+        run: uv venv --python 3.12 .venv
+      - name: Install
+        run: uv pip install -e ".[dev]"
+      - name: Lint (ruff)
+        run: .venv/bin/ruff check .
+      - name: Type check (mypy)
+        run: .venv/bin/mypy
+      - name: SAST (bandit)
+        run: .venv/bin/bandit -q -c pyproject.toml -r src
+      - name: Dependency audit (pip-audit)
+        run: .venv/bin/pip-audit || true  # advisory; do not block on transient CVEs
+      - name: Secret scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+      - name: Migrate DB
+        run: .venv/bin/alembic upgrade head
+      - name: Seed synthetic data
+        run: .venv/bin/python scripts/gen_synthetic_835.py
+      # THE COMPLIANCE GATE plus the full suite (incl. postgres integration).
+      - name: Tests
+        run: .venv/bin/pytest -q

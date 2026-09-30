@@ -1,0 +1,25 @@
+# Local dev infrastructure: Postgres 16 + pgvector.
+# HIPAA-eligible cloud (AWS with a signed BAA, KMS-managed keys, VPC isolation)
+# is the production target — documented in COMPLIANCE.md, not provisioned here.
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: rcm-postgres
+    environment:
+      POSTGRES_DB: rcm
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - rcm_pgdata:/var/lib/postgresql/data
+      - ./docker/initdb.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d rcm"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  rcm_pgdata:
